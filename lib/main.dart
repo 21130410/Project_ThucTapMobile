@@ -1,6 +1,7 @@
 import 'package:ban_mobile/navigation_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'Admin/main_page.dart';
 
 
 void main() {
@@ -36,9 +37,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       getPages: [
-        GetPage(name: '/NavigationMenu', page: () => const NavigationMenu())
-
-        // Các route khác của bạn ở đây
+        GetPage(name: '/NavigationMenu', page: () => const NavigationMenu()),
+        GetPage(name: '/MainPage', page: () => const MainPage()), // Thêm MainPage
       ],
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -110,9 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
               'You have pushed the button this many times:',
             ),ElevatedButton(
               onPressed: () {
-                debugPrint('Button Clicked!'); // Thay
-                Get.to(const NavigationMenu()); // Dùng Get.to() để chuyển màn hình
-                print('Button Clicked!');
+                Get.toNamed('/MainPage');
               },
               child: Text('Click Me'),
             ),

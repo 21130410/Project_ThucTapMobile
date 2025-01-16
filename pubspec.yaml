@@ -8,18 +8,19 @@ environment:
   sdk: ^3.5.4
 
 dependencies:
-  carousel_slider: ^5.0.0
   flutter:
     sdk: flutter
+  http: ^1.2.2
   get: ^4.6.5
-  iconsax: ^0.0.8  # Thêm thư viện Iconsax
+  iconsax: ^0.0.8
+  image_picker: ^1.0.0
+  carousel_slider: ^5.0.0
+
 
 flutter:
   uses-material-design: true
   assets:
     - assets/images/categories/
-
-
 
 dev_dependencies:
   flutter_test:
