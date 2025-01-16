@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
+import '../service/dashboard_service.dart';
 
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({Key? key}) : super(key: key);
+
+  @override
+  _DashboardPageState createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  final DashboardService _dashboardService = DashboardService();
+  late Future<Map<String, dynamic>> _dashboardData;
+
+  @override
+  void initState() {
+    super.initState();
+    _dashboardData = _dashboardService.fetchDashboardData();
+  }
 
   @override
   Widget build(BuildContext context) {
-    int totalOrders = 120;
-    int totalProductsSold = 350;
-    int totalUsers = 200;
-    double totalRevenue = 1500000;
-
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -24,36 +34,50 @@ class DashboardPage extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Expanded(
-            child: GridView.count(
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              children: [
-                _buildStatisticCard(
-                  icon: Icons.shopping_cart,
-                  title: 'Số đơn hàng',
-                  value: totalOrders.toString(),
-                  color: Colors.blue,
-                ),
-                _buildStatisticCard(
-                  icon: Icons.shopping_bag,
-                  title: 'Sản phẩm đã bán',
-                  value: totalProductsSold.toString(),
-                  color: Colors.green,
-                ),
-                _buildStatisticCard(
-                  icon: Icons.people,
-                  title: 'Người dùng',
-                  value: totalUsers.toString(),
-                  color: Colors.orange,
-                ),
-                _buildStatisticCard(
-                  icon: Icons.attach_money,
-                  title: 'Doanh thu (VNĐ)',
-                  value: totalRevenue.toStringAsFixed(0),
-                  color: Colors.red,
-                ),
-              ],
+            child: FutureBuilder<Map<String, dynamic>>(
+              future: _dashboardData,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No data available'));
+                } else {
+                  final data = snapshot.data!;
+                  return GridView.count(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    children: [
+                      _buildStatisticCard(
+                        icon: Icons.shopping_cart,
+                        title: 'Số đơn hàng',
+                        value: data['totalOrders'].toString(),
+                        color: Colors.blue,
+                      ),
+                      _buildStatisticCard(
+                        icon: Icons.shopping_bag,
+                        title: 'Sản phẩm đã bán',
+                        value: data['totalProductsSold'].toString(),
+                        color: Colors.green,
+                      ),
+                      _buildStatisticCard(
+                        icon: Icons.people,
+                        title: 'Người dùng',
+                        value: data['totalUsers'].toString(),
+                        color: Colors.orange,
+                      ),
+                      _buildStatisticCard(
+                        icon: Icons.attach_money,
+                        title: 'Doanh thu (VNĐ)',
+                        value: data['totalRevenue'].toString(),
+                        color: Colors.red,
+                      ),
+                    ],
+                  );
+                }
+              },
             ),
           ),
         ],
